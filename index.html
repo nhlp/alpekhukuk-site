@@ -189,14 +189,40 @@
 
     </div>
 
-    <div class="form" id="randevu" data-aos="fade-left">
-      <h2 class="section-title">Hızlı Randevu</h2>
+<div class="wrap contact">
+  <div class="info" data-aos="fade-right">
+    <!-- aynı içerik -->
+  </div>
 
-      <div class="card" style="margin-top:16px; padding:0; overflow:hidden; border-radius:16px;">
-  <div class="calendly-inline-widget"
-       data-url="https://calendly.com/glnhlphlvn/30min?timezone=Europe%2FIstanbul&hide_gdpr_banner=1&background_color=0d0f14&text_color=e8ecf1&primary_color=c7a86f"
-       style="min-width:320px;height:720px"></div>
+  <div class="form" id="randevu" data-aos="fade-left">
+    <h2 class="section-title">Hızlı Randevu</h2>
+    <form action="submit.php" method="POST" onsubmit="return validateAndSubmit(event)">
+      <div class="row">
+        <div>
+          <label>Ad Soyad</label>
+          <input required name="adsoyad" placeholder="Adınız Soyadınız" />
+        </div>
+        <div>
+          <label>Telefon</label>
+          <input required name="telefon" placeholder="05xx xxx xx xx" />
+        </div>
+      </div>
+      <label>E-posta (opsiyonel)</label>
+      <input type="email" name="email" placeholder="ornek@domain.com" />
+      <label>Tercih Ettiğiniz Tarih</label>
+      <input type="date" name="tarih" required />
+      <label>Konu</label>
+      <textarea rows="4" name="konu" required></textarea>
+
+      <input type="text" name="web_site" style="display:none" tabindex="-1" autocomplete="off" />
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center">
+        <button class="btn primary" type="submit">Randevu Talep Et</button>
+        <span class="muted" id="formMsg"></span>
+      </div>
+    </form>
+  </div>
 </div>
+
 
     </div>
   </div>
