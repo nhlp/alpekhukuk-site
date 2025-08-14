@@ -49,4 +49,13 @@ document.querySelectorAll('a[href="#randevu"]').forEach(el=>{
     e.preventDefault();
     Calendly.initPopupWidget({ url: CALENDLY_URL });
   });
+
+document.querySelectorAll('[data-calendly]').forEach(el=>{
+  el.addEventListener('click', (e)=>{
+    e.preventDefault();
+    Calendly.initPopupWidget({ url: "https://calendly.com/glnhlphlvn/30min?timezone=Europe%2FIstanbul&hide_gdpr_banner=1&background_color=0d0f14&text_color=e8ecf1&primary_color=c7a86f" });
+  });
+});
+
+
 });
