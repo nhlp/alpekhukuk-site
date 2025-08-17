@@ -1,0 +1,11 @@
+{
+  "name": "alpekhukuk-site",
+  "private": true,
+  "scripts": {
+    "dev": "eleventy --serve --port=8080",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1"
+  }
+}

@@ -1,0 +1,60 @@
+---
+layout: base.njk
+title: İletişim
+description: Adres, telefon, e-posta ve hızlı randevu talebi.
+heroBg: /assets/og-hero.jpg
+permalink: /iletisim/
+---
+
+{% set heroTitle = "İletişim" %}
+{% set heroLead = "Adres, telefon ve randevu talebi." %}
+{% include "partials/hero.njk" %}
+
+<section id="iletisim">
+  <div class="wrap">
+    <div class="map-card">
+      <iframe
+        src="https://www.google.com/maps?q=Barbaros%20Mah.%203304.%20Sk.%20No:13/37%20Kat%207,%20Kocasinan,%20Kayseri&hl=tr&z=16&output=embed"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <div class="contact-grid">
+      <div class="info">
+        <h2 class="section-title">İletişim</h2>
+        <p class="muted">{{ site.address }}</p>
+        <p class="muted">
+          Tel: <a href="tel:{{ site.phone }}">{{ site.phone }}</a> ·
+          E-posta: <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        </p>
+        <p style="margin-top:8px">
+          <a class="btn" href="https://www.google.com/maps/place/Alpek+Hukuk+ve+Arabuluculuk/" target="_blank" rel="noopener">Haritalarda Aç</a>
+        </p>
+      </div>
+
+      <div class="form" id="randevu">
+        <h2 class="section-title">Randevu</h2>
+        <form id="quickForm">
+          <div class="row">
+            <div><label>Ad - Soyad</label><input name="ad" placeholder="Adınız Soyadınız" required></div>
+            <div><label>Telefon</label><input type="tel" name="telefon" id="telefon" placeholder="05xx xxx xx xx" required></div>
+          </div>
+          <div class="row">
+            <div><label>E-posta</label><input type="email" name="email" placeholder="ornek@mail.com" required></div>
+            <div><label>Tercih Ettiğiniz Gün</label><input type="text" name="tarih" id="tarih" placeholder="gg.aa.yyyy" required></div>
+          </div>
+          <div class="row full">
+            <div>
+              <label for="bilgi">Kısa Bilgi</label>
+              <p class="muted" style="margin:4px 0 8px">Önceden bilmemiz gereken notlarınızı yazabilirsiniz.</p>
+              <textarea id="bilgi" name="bilgi" rows="4" placeholder="Kısa bilgi yazınız..."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn primary" type="submit" id="quickBtn">Talebi Gönder</button>
+            <span class="muted" id="quickMsg"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
