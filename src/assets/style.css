@@ -17,7 +17,7 @@ img{max-width:100%; display:block}
   position:fixed; inset:0 0 auto 0; z-index:50;
   background:rgba(8,10,14,.85); border-bottom:1px solid var(--line);
   backdrop-filter:saturate(180%) blur(10px);
-  padding:50px 0; min-height:72px; display:flex; align-items:center;
+  padding:36px 0; min-height:72px; display:flex; align-items:center;
 }
 .nav.scrolled{padding:12px 0;}
 .nav-inner{
@@ -143,7 +143,7 @@ body.light a{ color: inherit; }
 
 /* --- Makale hero: 1/4 ekran yüksekliği, kırpma --- */
 /* Post hero yüksekliği (tüm makale sayfaları) */
-.hero.hero--post { min-height: 25vh; }
+
 
 /* Makale gövdesi: beyaz kart */
 .post{
@@ -233,7 +233,17 @@ body.light a{ color: inherit; }
 }
 .prose img{ border-radius:12px; margin:1em 0; }
 
-/* Makale herosu ~1/4 yükseklik */
-.hero--post{ min-height:25vh; }
-.post-page .hero--post{ margin-top:96px; }
-.post-page .hero--post .hero-inner{ padding-top: 12px; }
+/* Makale herosu ~1/4 yükseklik + sabit navbar altında kalmasın */
+.hero--post{
+  min-height:25vh;
+  margin-top:96px;          /* navbar yüksekliği kadar aşağı it */
+}
+@media (max-width:900px){
+  .hero--post{ margin-top:64px; }
+}
+
+/* Anchor’lara (#başlık gibi) kayarken üstten kırpılmasın */
+html{ scroll-padding-top:96px; }
+@media (max-width:900px){
+  html{ scroll-padding-top:64px; }
+}

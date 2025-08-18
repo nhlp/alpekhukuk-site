@@ -9,11 +9,12 @@ module.exports = function (eleventyConfig) {
   );
 
   // TR tarih
-  eleventyConfig.addFilter("dateTR", (d) => {
-    const dt = new Date(d);
-    return dt.toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
+  eleventyConfig.addFilter("dateTR", (dateObj) => {
+    try {
+      return new Intl.DateTimeFormat("tr-TR", { day:"2-digit", month:"long", year:"numeric" })
+        .format(new Date(dateObj));
+    } catch { return ""; }
   });
-
   // ISO tarih (meta için)
   eleventyConfig.addFilter("dateISO", (d) => new Date(d).toISOString());
 
