@@ -113,3 +113,48 @@ label{display:block; font-size:14px; color:var(--muted); margin:8px 0 6px}
 
 /* Footer */
 footer{padding:28px 24px; color:var(--muted); border-top:1px solid var(--line); background:#0b0e13}
+/* --- Beyaz tema (makaleler) --- */
+body.light{
+  --bg:#ffffff;
+  --fg:#0d0f14;
+  --muted:#4b5563;
+  --card:#ffffff;
+  --line:rgba(0,0,0,.08);
+  background:#fff;
+  color:#0d0f14;
+}
+body.light .nav{
+  background:rgba(255,255,255,.9);
+  border-bottom:1px solid var(--line);
+}
+body.light .btn{ border-color: var(--line); }
+body.light a{ color: inherit; }
+
+/* Makale metni için basit tipografi */
+.prose h2{font-size:1.5rem; margin:1.25rem 0 .5rem;}
+.prose h3{font-size:1.2rem; margin:1rem 0 .5rem;}
+.prose p{margin:.6rem 0;}
+.prose ul{margin:.6rem 0 .6rem 1.25rem;}
+.prose img{max-width:100%; border-radius:12px;}
+.prose blockquote{
+  margin:1rem 0; padding:.8rem 1rem;
+  border-left:4px solid var(--brand); background:rgba(0,0,0,.03);
+}
+
+/* --- Makale hero: 1/4 ekran yüksekliği, kırpma --- */
+.hero--post{
+  min-height:25vh;          /* ~ ekranın 1/4'ü */
+}
+.hero--post::before{
+  content:"";
+  position:absolute; inset:0;
+  background:var(--hero-bg, url('/assets/og-hero.jpg')) center/cover no-repeat;
+  filter:grayscale(.05) contrast(1.02) brightness(.92);
+}
+.hero--post::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.15), transparent 70%);
+}
+.hero--post .hero-inner{
+  padding-top:52px; padding-bottom:18px;
+}

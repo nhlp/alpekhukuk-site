@@ -1,27 +1,28 @@
 ---
 layout: layouts/base.njk
-pageClass: light
+pageClass: light   # tüm makale sayfaları beyaz tema
 ---
 
-{% block hero %}{% endblock %}
+{% block hero %}
+<header class="hero hero--post" style="--hero-bg: url('{{ hero or "/assets/og-hero.jpg" }}')">
+  <div class="hero-inner">
+    <h1>{{ title }}</h1>
+    {% if summary %}<p class="lead">{{ summary }}</p>{% endif %}
+  </div>
+</header>
+{% endblock %}
 
 {% block content %}
-<article class="wrap" itemscope itemtype="https://schema.org/Article" style="padding-top:40px">
-  <header>
-    <h1 itemprop="headline" class="section-title">{{ title }}</h1>
-    <p class="muted" style="margin:6px 0 18px">
-      {% if author %}{{ author }} · {% endif %}
-      {{ date | dateTR }}
-      {% if tags and tags.length %} · Etiketler:
-        {% for t in tags %}
-          <a href="/etiket/{{ t | url }}/" class="btn" style="margin-right:6px">{{ t }}</a>
-        {% endfor %}
-      {% endif %}
-    </p>
-    {% if hero %}
-      <img src="{{ hero }}" alt="{{ title }}" style="border-radius:14px;margin:12px 0 20px">
+<article class="wrap" itemscope itemtype="https://schema.org/Article" style="padding-top:36px">
+  <p class="muted" style="margin:0 0 14px">
+    {% if author %}{{ author }} · {% endif %}
+    {{ date | dateTR }}
+    {% if tags and tags.length %} ·
+      {% for t in tags %}
+        <a href="/etiket/{{ t | url }}/" class="btn" style="margin-right:6px">{{ t }}</a>
+      {% endfor %}
     {% endif %}
-  </header>
+  </p>
 
   <div class="prose" itemprop="articleBody">
     {{ content | safe }}
