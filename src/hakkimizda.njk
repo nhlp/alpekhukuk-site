@@ -1,16 +1,38 @@
 ---
-layout: base.njk
+layout: layouts/base.njk
 title: Hakkımızda
-heroBg: /assets/og-hero.jpg
 permalink: /hakkimizda/
 ---
 
-{% set heroTitle = "Hakkımızda" %}
-{% set heroLead = "Şeffaf süreç, hızlı iletişim, KVKK uyumu." %}
-{% include "partials/hero.njk" %}
+<header class="hero" style="--hero-bg:url('/assets/og-hero.jpg')">
+  <div class="hero-inner">
+    <h1>Alpek Hukuk ve Arabuluculuk</h1>
+    <p class="lead">Danışmanlık, dava ve icra takiplerinde şeffaf ve sonuç odaklı yaklaşım.</p>
+  </div>
+</header>
 
 <section>
   <div class="wrap">
-    <p class="section-lead">Kayseri merkezli büromuz; bireyler ve işletmeler için hızlı, anlaşılır ve etik çözümler üretir.</p>
+    <h2 class="section-title">Kimiz?</h2>
+    <p class="section-lead">
+      Alpek Hukuk, Aralık 2023’te Av. Bengisu Kaya Pehlivan ve Av. Kürşat Alan tarafından
+      kurulmuştur; bünyede ayrıca Av. Yunus Kadir Pehlivan danışman ve arabulucu olarak görev yapmaktadır.
+      
+    </p>
+
+    <div class="cards">
+      <article class="card">
+        <h3>Vizyon</h3>
+        <p class="muted">Şirketler ve bireyler için hızlı, anlaşılır ve etik çözümler.</p>
+      </article>
+      <article class="card">
+        <h3>Deneyim</h3>
+        <p class="muted">Ekip, farklı şirketlere yıllarca danışmanlık ve dava takibi sağlamıştır.   </p>
+      </article>
+      <article class="card">
+        <h3>Arabuluculuk</h3>
+        <p class="muted">Uygun dosyalarda etkin arabuluculuk ve alternatif çözüm yolları.  </p>
+      </article>
+    </div>
   </div>
 </section>

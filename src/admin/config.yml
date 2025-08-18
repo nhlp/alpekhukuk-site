@@ -1,0 +1,35 @@
+backend:
+  name: github
+  repo: nhlp/alpekhukuk-site # <-- GitHub repo (sende neyse onu yaz)
+  branch: main
+  # NOTE: OAuth uç noktalarını bir sonraki adımda ekleyeceğiz.
+
+media_folder: "src/assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "makaleler"
+    label: "Makaleler"
+    folder: "src/makaleler"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    fields:
+      - { label: "Başlık", name: "title", widget: "string" }
+      - {
+          label: "Açıklama",
+          name: "description",
+          widget: "text",
+          required: false,
+        }
+      - { label: "Tarih", name: "date", widget: "datetime" }
+      - { label: "Yazar", name: "author", widget: "string", required: false }
+      - { label: "Etiketler", name: "tags", widget: "list", required: false }
+      - {
+          label: "Kapak Görseli",
+          name: "hero",
+          widget: "image",
+          required: false,
+        }
+      - { label: "İçerik", name: "body", widget: "markdown" }
+    preview_path: "makaleler/{{slug}}/"

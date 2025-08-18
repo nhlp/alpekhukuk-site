@@ -1,7 +1,16 @@
 {
   "name": "Alpek Hukuk ve Arabuluculuk",
-  "baseUrl": "https://alpekhukuk.com.tr",
+  "brand": "ALPEK HUKUK VE ARABULUCULUK",
+  "url": "https://alpekhukuk.com.tr",
+  "locale": "tr_TR",
   "phone": "+90 536 666 94 68",
   "email": "bengisukaya683@gmail.com",
-  "address": "Barbaros Mah. 3304. Sk. No:13/37 Kat 7, Kocasinan / Kayseri"
+  "address": "Barbaros Mah. 3304. Sk. No:13/37 Kat 7, Kocasinan / Kayseri",
+  "ogImage": "/assets/og-hero.jpg",
+  "nav": [
+    { "href": "/hakkimizda/", "label": "HAKKIMIZDA" },
+    { "href": "/calisma-alanlari/", "label": "ÇALIŞMA ALANLARI" },
+    { "href": "/ekip/", "label": "AVUKATLARIMIZ" },
+    { "href": "/iletisim/", "label": "İLETİŞİM" }
+  ]
 }

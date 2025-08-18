@@ -1,0 +1,21 @@
+---
+layout: layouts/base.njk
+title: Makaleler
+permalink: /makaleler/
+---
+
+<section class="wrap">
+  <h1 class="section-title">Makaleler</h1>
+  <p class="section-lead">Güncel içerikler ve bilgilendirici yazılar.</p>
+
+  <div class="cards">
+    {% for post in collections.makaleler %}
+    <article class="card">
+      <h3><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
+      <p class="muted">{{ post.data.description or "" }}</p>
+      <p class="muted" style="font-size:14px">{{ post.date | dateTR }}</p>
+      <p><a class="btn" href="{{ post.url }}">Devamını oku</a></p>
+    </article>
+    {% endfor %}
+  </div>
+</section>

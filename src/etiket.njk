@@ -1,0 +1,22 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: collections.tagList
+  size: 1
+  alias: tag
+permalink: /etiket/{{ tag | url }}/
+---
+
+<section class="wrap">
+  <h1 class="section-title">Etiket: {{ tag }}</h1>
+  <div class="cards">
+    {% for post in collections.makaleler | filterByTag(tag) %}
+      <article class="card">
+        <h3><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
+        <p class="muted">{{ post.data.description or "" }}</p>
+        <p class="muted" style="font-size:14px">{{ post.date | dateTR }}</p>
+        <p><a class="btn" href="{{ post.url }}">Devamını oku</a></p>
+      </article>
+    {% endfor %}
+  </div>
+</section>
