@@ -6,7 +6,6 @@ date: 2025-08-20
 author: Av. Bengisu Kaya Pehlivan
 tags: ["#iş hukuku ", " #arabuluculuk"]
 hero: /assets/og-hero.jpg
-permalink: /makaleler/is-hukukunda-sik-sorulanlar/
 ---
 
 **İş Hukukunda Sık Sorulan Sorular**

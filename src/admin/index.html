@@ -1,11 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Yönetim | Alpek</title>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <meta charset="utf-8"/>
+    <title>Yönetim - Alpek</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
   </head>
   <body>
+    <!-- Decap CMS -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <script>
+      // Manuel init: config yolu admin klasörü altında
+      window.CMS_MANUAL_INIT = true;
+      CMS.init({ config: '/admin/config.yml' });
+    </script>
   </body>
 </html>

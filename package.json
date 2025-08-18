@@ -2,10 +2,12 @@
   "name": "alpekhukuk-site",
   "private": true,
   "scripts": {
-    "dev": "eleventy --serve --port=8080",
-    "build": "eleventy"
+    "dev": "decap-server --port 8081 & eleventy --serve --port=8080",
+    "build": "eleventy",
+     "clean": "rm -rf .eleventy.cjs .cache .11ty dist"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1"
+    "@11ty/eleventy": "^2.0.1",
+    "decap-server": "^3.3.1"
   }
 }

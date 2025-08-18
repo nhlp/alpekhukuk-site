@@ -1,35 +1,43 @@
 backend:
   name: github
-  repo: nhlp/alpekhukuk-site # <-- GitHub repo (sende neyse onu yaz)
+  repo: nhlp/alpekhukuk-site
   branch: main
-  # NOTE: OAuth uç noktalarını bir sonraki adımda ekleyeceğiz.
+  base_url: https://www.alpekhukuk.com.tr
+  auth_endpoint: /api/auth
+
+local_backend: true
 
 media_folder: "src/assets/uploads"
 public_folder: "/assets/uploads"
 
 collections:
-  - name: "makaleler"
+  - name: "posts"
     label: "Makaleler"
-    folder: "src/makaleler"
+    folder: "src/posts"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    extension: "md"
+    preview_path: "makaleler/{{ slug }}/"
     fields:
       - { label: "Başlık", name: "title", widget: "string" }
+      - { label: "Özet", name: "description", widget: "text", required: false }
       - {
-          label: "Açıklama",
-          name: "description",
-          widget: "text",
-          required: false,
+          label: "Tarih",
+          name: "date",
+          widget: "datetime",
+          format: "YYYY-MM-DD",
+          time_format: false,
         }
-      - { label: "Tarih", name: "date", widget: "datetime" }
-      - { label: "Yazar", name: "author", widget: "string", required: false }
-      - { label: "Etiketler", name: "tags", widget: "list", required: false }
       - {
-          label: "Kapak Görseli",
+          label: "Yazar",
+          name: "author",
+          widget: "string",
+          default: "Alpek Hukuk",
+        }
+      - { label: "Etiketler", name: "tags", widget: "list", default: ["hukuk"] }
+      - {
+          label: "Hero Görseli",
           name: "hero",
           widget: "image",
           required: false,
         }
       - { label: "İçerik", name: "body", widget: "markdown" }
-    preview_path: "makaleler/{{slug}}/"
