@@ -63,7 +63,7 @@ img{max-width:100%; display:block}
 .hero{position:relative; min-height:92vh; display:grid; place-items:center; overflow:hidden}
 .hero::before{
   content:""; position:absolute; inset:-10%;
-  background:var(--hero-bg, url('/assets/og-hero.jpg')) center/cover no-repeat;
+  background:var(--hero-bg, url('/assets/lady.jpg')) center/cover no-repeat;
   filter:grayscale(.1) contrast(1.05) brightness(.8);
   transform:translateY(var(--parallax,0px)); transition:transform .1s linear;
 }
@@ -142,19 +142,98 @@ body.light a{ color: inherit; }
 }
 
 /* --- Makale hero: 1/4 ekran yüksekliği, kırpma --- */
-.hero--post{
-  min-height:25vh;          /* ~ ekranın 1/4'ü */
+/* Post hero yüksekliği (tüm makale sayfaları) */
+.hero.hero--post { min-height: 25vh; }
+
+/* Makale gövdesi: beyaz kart */
+.post{
+  max-width: 840px;
+  margin: -48px auto 80px;      /* hero'nun altına yedir */
+  background:#fff;
+  color:#0d0f14;
+  border-radius:16px;
+  padding:32px 24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
-.hero--post::before{
-  content:"";
-  position:absolute; inset:0;
-  background:var(--hero-bg, url('/assets/og-hero.jpg')) center/cover no-repeat;
-  filter:grayscale(.05) contrast(1.02) brightness(.92);
+.post a{ color:#0b5fc0; }
+.post-meta{ color:#55606d; font-size:14px; margin-bottom:10px; }
+
+/* Okunabilir tipografi */
+.post .prose p{ margin:1em 0; }
+.post .prose h2{ margin:1.6em 0 .6em; }
+.post .prose ul, .post .prose ol{ padding-left:1.25rem; }
+.post .prose li{ margin:.35em 0; }
+
+@media (max-width:700px){
+  .post{ margin:-32px 12px 64px; padding:20px 16px; }
 }
-.hero--post::after{
-  content:""; position:absolute; inset:0;
-  background:linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.15), transparent 70%);
+
+/* Eskisini koruyup ÜZERİNE ekleyin/override edin */
+.brand{
+  font-size: clamp(16px, 1.2vw + 14px, 22px); /* responsive metin */
+  white-space: nowrap;                         /* marka satır kırmasın */
 }
-.hero--post .hero-inner{
-  padding-top:52px; padding-bottom:18px;
+
+.brand-mark{
+  width: 1.6em;    /* fonta bağlı */
+  height: 1.6em;   /* fonta bağlı */
 }
+/* Mevcut değerleri güncelleyin */
+.nav-inner{
+  max-width: 1320px;           /* 1100 → 1320 */
+  margin: 0 auto;
+  padding: 0 20px;             /* kenarlara biraz daha nefes */
+}
+
+/* Sayfa genel sarmalayıcı */
+.wrap{
+  max-width: 1320px;           /* 1100 → 1320 */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Büyük ekranlarda biraz daha açmak isterseniz opsiyonel: */
+@media (min-width: 1600px){
+  .nav-inner, .wrap{ max-width: 1400px; }
+}
+/* Sadece içerik alanını (main) beyaza çevirir */
+.site-main.light{
+  --bg:#ffffff;
+  --fg:#0d0f14;
+  --muted:#4b5563;
+  --card:#ffffff;
+  --line:rgba(0,0,0,.1);
+
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Kart ve metin tonları beyaz temaya uyumlu olsun */
+.site-main.light .card{
+  background:#fff;
+  border-color: var(--line);
+}
+.site-main.light .muted{ color: var(--muted); }
+
+/* Makale tipografisi */
+.prose{
+  max-width: 72ch;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--fg);
+  padding: 0 1rem;
+}
+.prose h1,.prose h2,.prose h3{ line-height:1.25; margin:1.8em 0 .6em; }
+.prose p{ margin:1em 0; }
+.prose ul, .prose ol { margin:1em 0 1em 1.25em; }
+.prose blockquote{
+  margin:1.4em 0; padding:.8em 1em; border-left:4px solid var(--brand);
+  background:rgba(0,0,0,.03);
+}
+.prose img{ border-radius:12px; margin:1em 0; }
+
+/* Makale herosu ~1/4 yükseklik */
+.hero--post{ min-height:25vh; }
+.post-page .hero--post{ margin-top:96px; }
+.post-page .hero--post .hero-inner{ padding-top: 12px; }

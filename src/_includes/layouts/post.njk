@@ -1,31 +1,28 @@
 ---
 layout: layouts/base.njk
-pageClass: light   # tüm makale sayfaları beyaz tema
 ---
 
-{% block hero %}
 <header class="hero hero--post" style="--hero-bg: url('{{ hero or "/assets/og-hero.jpg" }}')">
   <div class="hero-inner">
     <h1>{{ title }}</h1>
-    {% if summary %}<p class="lead">{{ summary }}</p>{% endif %}
+    {% if description %}<p class="lead">{{ description }}</p>{% endif %}
   </div>
 </header>
-{% endblock %}
 
-{% block content %}
-<article class="wrap" itemscope itemtype="https://schema.org/Article" style="padding-top:36px">
-  <p class="muted" style="margin:0 0 14px">
-    {% if author %}{{ author }} · {% endif %}
-    {{ date | dateTR }}
-    {% if tags and tags.length %} ·
-      {% for t in tags %}
-        <a href="/etiket/{{ t | url }}/" class="btn" style="margin-right:6px">{{ t }}</a>
-      {% endfor %}
-    {% endif %}
-  </p>
+<section class="post-section">
+  <article class="post">
+    <div class="post-meta">
+      <time datetime="{{ date | dateISO }}">{{ date | dateTR }}</time>
+      {% if author %} · {{ author }}{% endif %}
+      {% if tags %}
+      <span class="tags">
+        {% for t in tags %}<span class="tag">{{ t }}</span>{% endfor %}
+      </span>
+      {% endif %}
+    </div>
 
-  <div class="prose" itemprop="articleBody">
-    {{ content | safe }}
-  </div>
-</article>
-{% endblock %}
+    <div class="post-content">
+      {{ content | safe }}
+    </div>
+  </article>
+</section>

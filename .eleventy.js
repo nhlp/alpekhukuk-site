@@ -1,47 +1,25 @@
-module.exports = function(eleventyConfig) {
-  eleventyConfig.addPassthroughCopy({"src/assets": "assets"});
-  eleventyConfig.addPassthroughCopy({"src/admin": "admin"});
-eleventyConfig.addLayoutAlias("base", "layouts/base.njk");
-eleventyConfig.addLayoutAlias("post", "layouts/post.njk");
+module.exports = function (eleventyConfig) {
+  // statik dosyalar
+  eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+  eleventyConfig.addPassthroughCopy({ "src/admin": "admin" });
 
-  // TR tarih filtresi
-  eleventyConfig.addFilter("dateTR", (dateObj, opts = {}) => {
-    try {
-      return new Intl.DateTimeFormat("tr-TR", { dateStyle: "long", ...opts }).format(dateObj);
-    } catch {
-      return (dateObj instanceof Date) ? dateObj.toISOString().slice(0,10) : String(dateObj);
-    }
+  // Koleksiyon: sadece src/posts/*.md
+  eleventyConfig.addCollection("posts", (api) =>
+    api.getFilteredByGlob("src/posts/*.md")
+  );
+
+  // TR tarih
+  eleventyConfig.addFilter("dateTR", (d) => {
+    const dt = new Date(d);
+    return dt.toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
   });
 
-  // Etiket filtre yardımcı
-  eleventyConfig.addFilter("filterByTag", (collection, tag) => {
-    return (collection || []).filter(p => (p.data.tags || []).includes(tag));
-  });
-
-  // Makaleler koleksiyonu
-  eleventyConfig.addCollection("makaleler", (api) => {
-    return api.getFilteredByGlob("src/makaleler/*.md").sort((a, b) => b.date - a.date);
-  });
-
-  // Tüm etiketler
-  eleventyConfig.addCollection("tagList", (api) => {
-    const set = new Set();
-    api.getFilteredByGlob("src/makaleler/*.md").forEach(p => {
-      (p.data.tags || []).forEach(t => set.add(t));
-    });
-    return [...set].sort();
-  });
+  // ISO tarih (meta için)
+  eleventyConfig.addFilter("dateISO", (d) => new Date(d).toISOString());
 
   return {
-    dir: {
-      input: "src",
-      includes: "_includes",
-      data: "_data",
-      output: "dist"
-    },
-    templateFormats: ["njk", "md", "html"],
-    markdownTemplateEngine: "njk",
+    dir: { input: "src", includes: "_includes", data: "_data", output: "dist" },
     htmlTemplateEngine: "njk",
-    passthroughFileCopy: true
+    markdownTemplateEngine: "njk",
   };
 };

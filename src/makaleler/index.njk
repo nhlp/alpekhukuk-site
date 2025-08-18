@@ -2,11 +2,12 @@
 layout: layouts/base.njk
 title: Makaleler
 permalink: /makaleler/
-pageClass: light   # beyaz tema
 ---
 
 <header class="hero hero--post" style="--hero-bg: url('/assets/og-hero.jpg')">
   <div class="hero-inner">
+  <br>
+  <br>
     <h1>Makaleler</h1>
     <p class="lead">Güncel hukuki bilgi ve yorumlar.</p>
   </div>
@@ -15,35 +16,22 @@ pageClass: light   # beyaz tema
 <section>
   <div class="wrap">
     <div class="cards">
-      {# Tarihe göre yeni->eski sıralama #}
       {% for post in collections.posts | reverse %}
         <article class="card" style="grid-column: span 12">
-          {% if post.data.hero %}
-            <a href="{{ post.url }}">
-              <div style="width:100%;height:220px;border-radius:14px;overflow:hidden;background:#111">
-                <div style="width:100%;height:100%;
-                            background:url('{{ post.data.hero }}') center/cover no-repeat;"></div>
-              </div>
-            </a>
-          {% endif %}
-
-          <h3 style="margin:12px 0 6px">
-            <a href="{{ post.url }}">{{ post.data.title }}</a>
-          </h3>
-
+          <a href="{{ post.url }}">
+            <div style="width:100%;height:220px;border-radius:14px;overflow:hidden;background:#111">
+              <div style="width:100%;height:100%;
+                          background:url('{{ post.data.hero or "/assets/og-hero.jpg" }}') center/cover no-repeat;"></div>
+            </div>
+          </a>
+          <h3 style="margin:12px 0 6px"><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
           <p class="muted" style="margin:0 0 10px">
             {{ post.date | dateTR }}
             {% if post.data.tags %}
-              · {% for t in post.data.tags %}
-                <a href="/etiket/{{ t | url }}/" class="btn" style="margin-right:6px">{{ t }}</a>
-                {% endfor %}
+              · {% for t in post.data.tags %}<span class="tag" style="margin-right:6px">{{ t }}</span>{% endfor %}
             {% endif %}
           </p>
-
-          {% if post.data.summary %}
-            <p class="muted">{{ post.data.summary }}</p>
-          {% endif %}
-
+          {% if post.data.description %}<p class="muted">{{ post.data.description }}</p>{% endif %}
           <p style="margin-top:8px"><a class="btn" href="{{ post.url }}">Devamını oku</a></p>
         </article>
       {% endfor %}

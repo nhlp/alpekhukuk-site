@@ -163,3 +163,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 })();
+document.addEventListener('DOMContentLoaded', () => {
+  const nav  = document.getElementById('nav');
+  const hero = document.querySelector('.post-page .hero--post');
+  if (!nav || !hero) return;
+
+  const applyOffset = () => {
+    hero.style.marginTop = nav.offsetHeight + 'px';
+  };
+
+  applyOffset();
+  window.addEventListener('resize', applyOffset);
+});
