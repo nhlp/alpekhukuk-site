@@ -5,7 +5,7 @@ backend:
   base_url: https://www.alpekhukuk.com.tr
   auth_endpoint: /api/auth
 
-local_backend: false # prod’da false; lokale özel true kullanırız
+local_backend: false
 
 media_folder: "src/assets/uploads"
 public_folder: "/assets/uploads"
