@@ -3,11 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Decap</title>
-  <script>window.CMS_MANUAL_INIT = true;</script>
-  <script src="https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js"></script>
+  <title>Yönetim — Alpek</title>
+  <meta name="robots" content="noindex" />
 </head>
 <body>
-  <script>CMS.init({ config: '/admin/config.yml' });</script>
+  <!-- 1) KÜTÜPHANEYİ YÜKLE -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <!-- 2) ELLE BAŞLATMA (MANUAL INIT) -->
+  <script>
+    window.CMS_MANUAL_INIT = true;
+
+    // decap-cms yüklendikten SONRA init et
+    if (window.CMS) {
+      CMS.init({ config: '/admin/config.yml' });
+      console.log('Decap CMS init çağrıldı');
+    } else {
+      console.error('Decap CMS yüklenemedi');
+    }
+  </script>
 </body>
 </html>

@@ -16,7 +16,7 @@ collections:
     folder: "src/posts"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    preview_path: "makaleler/{{slug}}/"
+    preview_path: "makaleler/{{ slug }}/"
     fields:
       - { label: "Başlık", name: "title", widget: "string" }
       - { label: "Özet", name: "description", widget: "text", required: false }
