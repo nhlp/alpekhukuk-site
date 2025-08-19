@@ -1,29 +1,41 @@
+// .eleventy.js
 module.exports = function (eleventyConfig) {
-   // Admin ve uploads klasörü “passthrough”
-  eleventyConfig.addPassthroughCopy({ "src/admin": "admin" });
+  // Statik kopyalamalar
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
-eleventyConfig.addPassthroughCopy({ "node_modules/decap-cms/dist/decap-cms.js": "admin/decap-cms.js" });
-eleventyConfig.addPassthroughCopy({ "src/favicon.ico": "favicon.ico" }); + src/favicon.ico
-  // Koleksiyon: sadece src/posts/*.md
-  eleventyConfig.addCollection("posts", (api) =>
-    api.getFilteredByGlob("src/posts/*.md")
-  );
+  eleventyConfig.addPassthroughCopy({ "src/admin": "admin" });
+  eleventyConfig.addPassthroughCopy({ "src/favicon.ico": "favicon.ico" });
 
-  // TR tarih
-  eleventyConfig.addFilter("dateTR", (dateObj) => {
+  // TR tarih: 20 Ağustos 2025
+  eleventyConfig.addNunjucksFilter("dateTR", (d) => {
     try {
-      return new Intl.DateTimeFormat("tr-TR", { day:"2-digit", month:"long", year:"numeric" })
-        .format(new Date(dateObj));
-    } catch { return ""; }
+      return new Intl.DateTimeFormat("tr-TR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(d);
+    } catch {
+      return d;
+    }
   });
-  // ISO tarih (meta için)
-  eleventyConfig.addFilter("dateISO", (d) => new Date(d).toISOString());
+
+  // ISO tarih: 2025-08-20T00:00:00.000Z (time datetime="" için)
+  eleventyConfig.addNunjucksFilter("dateISO", (d) => {
+    try {
+      return new Date(d).toISOString();
+    } catch {
+      return new Date(String(d)).toISOString();
+    }
+  });
 
   return {
-    dir: { input: "src", output: "dist", includes: "_includes" },
-    templateFormats: ["njk","md","html","liquid"],
-    htmlTemplateEngine: "njk",
+    dir: {
+      input: "src",
+      output: "dist",
+      includes: "_includes",
+      data: "_data",
+    },
+    templateFormats: ["njk", "md", "html", "liquid"],
     markdownTemplateEngine: "njk",
-    passthroughFileCopy: true,
+    htmlTemplateEngine: "njk",
   };
 };
