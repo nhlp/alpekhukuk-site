@@ -6,19 +6,36 @@
   <title>Yönetim — Alpek</title>
   <meta name="robots" content="noindex" />
   <link rel="icon" href="/assets/favicon.ico" />
-  <script>window.CMS_MANUAL_INIT = true; window.CMS_DEBUG = true;</script>
+  <script>
+    // Otomatik init’i kapat, biz tek kez elle çağıracağız
+    window.CMS_MANUAL_INIT = true;
+    window.CMS_DEBUG = true;
+  </script>
   <script src="https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js"></script>
 </head>
 <body>
   <div id="nc-root"></div>
+
   <script>
-    (function () {
-      if (!window.__cms_inited && window.CMS) {
-        window.__cms_inited = true;
-        CMS.init({ config: '/admin/config.yml' });
-        console.log('CMS.init called once.');
-      }
-    })();
+    // Birden fazla kez init olmasın
+    if (!window.__cms_inited && window.CMS) {
+      window.__cms_inited = true;
+      CMS.init({ config: '/admin/config.yml' });
+      console.log('CMS.init called once.');
+    }
+
+    // Debug: geri dönen postMessage’ı yakala
+    window.addEventListener('message', (e) => {
+      console.log('[ADMIN] message from', e.origin, e.data);
+    });
   </script>
+
+  <!-- (Opsiyonel) Pop-up engellenirse, bu butonla direkt tetikle -->
+  <p style="text-align:center;margin-top:16px">
+    <button onclick="window.open('/api/auth','decap','width=700,height=800');"
+            style="padding:8px 12px;border-radius:8px;border:1px solid #ccc">
+      GitHub ile giriş (manuel)
+    </button>
+  </p>
 </body>
 </html>
