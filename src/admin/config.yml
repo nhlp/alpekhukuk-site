@@ -2,7 +2,7 @@ backend:
   name: github
   repo: nhlp/alpekhukuk-site
   branch: main
-  base_url: https://www.alpekhukuk.com.tr
+  base_url: https://www.alpekhukuk.com.tr # origin tam eşleşmeli
   auth_endpoint: /api/auth
 
 local_backend: false
