@@ -6,30 +6,17 @@
   <title>Yönetim — Alpek</title>
   <meta name="robots" content="noindex" />
   <link rel="icon" href="/assets/favicon.ico" />
-
-  <script>
-    window.CMS_MANUAL_INIT = true; // otomatik init’i kapat
-    window.CMS_DEBUG = true;       // konsola daha fazla log
-  </script>
-
-  <!-- Decap CMS — tek bir kez yüklenmeli -->
+  <script>window.CMS_MANUAL_INIT = true; window.CMS_DEBUG = true;</script>
   <script src="https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js"></script>
 </head>
 <body>
-  <!-- Bazı sürümlerde kökü hazırda bulundurmak daha stabil -->
   <div id="nc-root"></div>
-
-  <!-- Tek seferlik init guard’ı -->
   <script>
     (function () {
-      if (!window.__cms_inited) {
+      if (!window.__cms_inited && window.CMS) {
         window.__cms_inited = true;
-        if (window.CMS) {
-          CMS.init({ config: '/admin/config.yml' });
-          console.log('CMS.init called once.');
-        } else {
-          console.error('Decap yüklenemedi');
-        }
+        CMS.init({ config: '/admin/config.yml' });
+        console.log('CMS.init called once.');
       }
     })();
   </script>
