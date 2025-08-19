@@ -1,10 +1,10 @@
-// Vercel Serverless Function: /api/auth/callback  → code'u token'a çevirir
+// /api/auth/callback  → GitHub code'u access_token'a çevirir ve Decap'e postMessage ile iletir
 module.exports = async (req, res) => {
   const ORIGIN = process.env.SITE_ORIGIN || `https://${req.headers.host}`;
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
-  // CORS
+  // CORS (ihtiyaten)
   res.setHeader('Access-Control-Allow-Origin', ORIGIN);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -14,7 +14,6 @@ module.exports = async (req, res) => {
   const code = url.searchParams.get('code');
   if (!code) return res.status(400).json({ error: 'Missing code' });
 
-  // GitHub token isteği (Node 18+ native fetch)
   const ghRes = await fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -25,12 +24,31 @@ module.exports = async (req, res) => {
       redirect_uri: `${ORIGIN}/api/auth/callback`,
     }),
   });
-  const data = await ghRes.json();
 
+  const data = await ghRes.json();
   if (!data.access_token) {
     return res.status(400).json({ error: 'No token', details: data });
   }
 
-  res.setHeader('Content-Type', 'application/json');
-  res.status(200).end(JSON.stringify({ token: data.access_token }));
+  // XSS güvenliği için '<' kaçır
+  const safe = JSON.stringify({ token: data.access_token }).replace(/</g, '\\u003c');
+
+  // Decap CMS beklediği şekilde token'ı üst pencereye postMessage ederek gönder
+  const html = `<!doctype html>
+<html><body>
+<script>
+(function() {
+  try {
+    if (window.opener && window.opener.postMessage) {
+      window.opener.postMessage('authorization:github:success:${safe}', '*');
+    }
+  } catch (e) {}
+  window.close();
+})();
+</script>
+Giriş tamamlandı. Bu pencere otomatik kapanacaktır.
+</body></html>`;
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.status(200).end(html);
 };
