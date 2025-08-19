@@ -2,6 +2,7 @@ module.exports = function (eleventyConfig) {
    // Admin ve uploads klasörü “passthrough”
   eleventyConfig.addPassthroughCopy({ "src/admin": "admin" });
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+eleventyConfig.addPassthroughCopy({ "node_modules/decap-cms/dist/decap-cms.js": "admin/decap-cms.js" });
 
   // Koleksiyon: sadece src/posts/*.md
   eleventyConfig.addCollection("posts", (api) =>
