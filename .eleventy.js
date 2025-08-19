@@ -1,7 +1,7 @@
 module.exports = function (eleventyConfig) {
-  // statik dosyalar
-  eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+   // Admin ve uploads klasörü “passthrough”
   eleventyConfig.addPassthroughCopy({ "src/admin": "admin" });
+  eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
 
   // Koleksiyon: sadece src/posts/*.md
   eleventyConfig.addCollection("posts", (api) =>
@@ -19,7 +19,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("dateISO", (d) => new Date(d).toISOString());
 
   return {
-    dir: { input: "src", includes: "_includes", data: "_data", output: "dist" },
-  templateFormats: ["njk", "md", "html", "liquid"]
+    dir: { input: "src", output: "dist", includes: "_includes" },
+    templateFormats: ["njk","md","html","liquid"],
+    htmlTemplateEngine: "njk",
+    markdownTemplateEngine: "njk",
+    passthroughFileCopy: true,
   };
 };
