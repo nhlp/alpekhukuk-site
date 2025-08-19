@@ -4,15 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Decap</title>
-  <!-- Manuel init kullanacağız -->
   <script>window.CMS_MANUAL_INIT = true;</script>
-  <!-- Sürümü sabitle: 3.8.3 -->
   <script src="https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js"></script>
 </head>
 <body>
-  <script>
-    // Config dosyasını açıkça göster—CDN/önbellek sorunlarında boş ekranı engeller
-    CMS.init({ config: '/admin/config.yml' });
-  </script>
+  <script>CMS.init({ config: '/admin/config.yml' });</script>
 </body>
 </html>

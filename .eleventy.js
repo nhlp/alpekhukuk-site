@@ -3,7 +3,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/admin": "admin" });
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
 eleventyConfig.addPassthroughCopy({ "node_modules/decap-cms/dist/decap-cms.js": "admin/decap-cms.js" });
-
+eleventyConfig.addPassthroughCopy({ "src/favicon.ico": "favicon.ico" }); + src/favicon.ico
   // Koleksiyon: sadece src/posts/*.md
   eleventyConfig.addCollection("posts", (api) =>
     api.getFilteredByGlob("src/posts/*.md")
