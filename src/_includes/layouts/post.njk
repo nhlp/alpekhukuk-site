@@ -12,7 +12,8 @@ layout: layouts/base.njk
 <section class="post-section">
   <article class="post">
     <div class="post-meta">
-      <time datetime="{{ date | dateISO }}">{{ date | dateTR }}</time>
+     <time datetime="{{ date | dateISO }}" class="muted">{{ date | dateTR }}</time>
+
       {% if author %} · {{ author }}{% endif %}
       {% if tags %}
       <span class="tags">

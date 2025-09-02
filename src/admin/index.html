@@ -1,3 +1,4 @@
+<!-- src/admin/index.html -->
 <!doctype html>
 <html lang="tr">
 <head>
@@ -7,23 +8,20 @@
   <meta name="robots" content="noindex" />
   <link rel="icon" href="/assets/favicon.ico" />
   <script>
-    // Otomatik init’i kapatıp debug açıyoruz
-    window.CMS_MANUAL_INIT = true;
-    window.CMS_DEBUG = true;
+    window.CMS_MANUAL_INIT = true;  // otomatik init kapalı
+    window.CMS_DEBUG = true;        // debug açık
   </script>
-  <!-- LÜTFEN TEK SCRIPT: başka decap-cms.js tag’ı kalmasın -->
+  <!-- TEK script ve SÜRÜM SABİT: 3.7.4 -->
   <script src="https://unpkg.com/decap-cms@3.7.4/dist/decap-cms.js"></script>
 </head>
 <body>
   <div id="nc-root"></div>
   <script>
-    // Bir kez başlat
     if (!window.__cms_inited && window.CMS) {
       window.__cms_inited = true;
       CMS.init({ config: '/admin/config.yml' });
       console.log('CMS.init called once.');
     }
-    // Debug için gelen postMessage’ları görelim
     window.addEventListener('message', (e) => {
       console.log('[ADMIN] message from', e.origin, e.data);
     });

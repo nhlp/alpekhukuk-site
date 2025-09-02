@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "decap-server --port 8081 & eleventy --serve --port=8080",
     "build": "eleventy",
-     "clean": "rm -rf .eleventy.cjs .cache .11ty dist"
+     "clean": "rm -rf .eleventy.cjs .cache .11ty dist",
+     "dev:site": "eleventy --serve --port=8080",
+"dev:cms": "decap-server --port 8081"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
