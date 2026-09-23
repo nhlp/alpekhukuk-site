@@ -6,6 +6,7 @@ import { getPracticeAreas, getLawyers, getPublishedArticles } from "@/lib/querie
 import { PracticeAreaCard } from "@/components/site/PracticeAreaCard";
 import { LawyerCard } from "@/components/site/LawyerCard";
 import { ArticleCard } from "@/components/site/ArticleCard";
+import { HeroScene } from "@/components/site/HeroScene";
 import { Button } from "@/components/ui/Button";
 
 const pillars = [
@@ -37,15 +38,15 @@ export default async function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden bg-navy">
+        <HeroScene />
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0"
           style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-            backgroundSize: "28px 28px",
+            background:
+              "linear-gradient(90deg, rgba(11,31,58,0.92) 0%, rgba(11,31,58,0.65) 42%, rgba(11,31,58,0.35) 100%)",
           }}
         />
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center md:py-28">
+        <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center md:py-28">
           <div>
             <span className="inline-block rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-gold">
               Kayseri Hukuk ve Arabuluculuk Bürosu
