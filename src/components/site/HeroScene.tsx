@@ -2,9 +2,12 @@
 
 import { useEffect, useRef } from "react";
 
-const DUST_COUNT = 70;
-const DUST_BOUNDS = { x: 50, y: 32, z: 30 };
-const MAX_TILT = 0.32; // radyan, ~18°
+const PARTICLE_COUNT = 140;
+const CONNECT_DISTANCE = 15;
+const PARTICLE_BOUNDS = { x: 52, y: 32, z: 26 };
+const REPEL_RADIUS = 15;
+const REPEL_STRENGTH = 0.38;
+const MAX_TILT = 0.3; // radyan, ~17°
 
 function makeGlowTexture(THREE: typeof import("three")) {
   const size = 64;
@@ -23,86 +26,108 @@ function makeGlowTexture(THREE: typeof import("three")) {
   return new THREE.CanvasTexture(canvas);
 }
 
+/** İki nokta arasına ince bir çubuk (zincir/destek) yerleştirir. */
+function makeRod(
+  THREE: typeof import("three"),
+  from: import("three").Vector3,
+  to: import("three").Vector3,
+  radius: number,
+  material: import("three").Material,
+) {
+  const dir = new THREE.Vector3().subVectors(to, from);
+  const length = dir.length();
+  const geometry = new THREE.CylinderGeometry(radius, radius, length, 8);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.copy(from).addScaledVector(dir, 0.5);
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+  return mesh;
+}
+
 function buildScale(THREE: typeof import("three"), material: import("three").Material) {
   const group = new THREE.Group();
 
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 4, 1, 40), material);
-  base.position.y = -15;
-  group.add(base);
+  // Taban: iki katmanlı, heykel benzeri
+  const baseLower = new THREE.Mesh(new THREE.CylinderGeometry(4.3, 4.7, 0.7, 48), material);
+  baseLower.position.y = -15.6;
+  group.add(baseLower);
+  const baseUpper = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 2.5, 0.6, 48), material);
+  baseUpper.position.y = -14.9;
+  group.add(baseUpper);
 
-  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 27, 20), material);
-  pole.position.y = -1.5;
+  // Direk + süsleme yakası
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.34, 26, 24), material);
+  pole.position.y = -1.7;
   group.add(pole);
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.11, 14, 28), material);
+  collar.rotation.x = Math.PI / 2;
+  collar.position.y = -7;
+  group.add(collar);
 
-  const finial = new THREE.Mesh(new THREE.OctahedronGeometry(1, 0), material);
-  finial.position.y = 13;
+  // Tepe süsü
+  const finialCollar = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.1, 12, 28), material);
+  finialCollar.rotation.x = Math.PI / 2;
+  finialCollar.position.y = 11.2;
+  group.add(finialCollar);
+  const finial = new THREE.Mesh(new THREE.OctahedronGeometry(0.95, 0), material);
+  finial.position.y = 12.6;
   group.add(finial);
 
+  // Kiriş (kefelerin asılı olduğu kol)
   const beamGroup = new THREE.Group();
-  beamGroup.position.y = 11.8;
+  beamGroup.position.y = 11.2;
   group.add(beamGroup);
 
-  const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 23, 20), material);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 24, 20), material);
   beam.rotation.z = Math.PI / 2;
   beamGroup.add(beam);
-
-  const pivot = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20), material);
+  for (const side of [-1, 1]) {
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 16), material);
+    cap.position.x = side * 12;
+    beamGroup.add(cap);
+  }
+  const pivot = new THREE.Mesh(new THREE.OctahedronGeometry(0.6, 0), material);
   beamGroup.add(pivot);
 
-  const chainMaterial = new THREE.LineBasicMaterial({
-    color: 0xd9bd7e,
-    transparent: true,
-    opacity: 0.55,
-  });
+  const panProfile = [
+    new THREE.Vector2(0, 0),
+    new THREE.Vector2(0.35, 0.05),
+    new THREE.Vector2(1.6, 0.22),
+    new THREE.Vector2(2.55, 0.42),
+    new THREE.Vector2(2.85, 0.6),
+    new THREE.Vector2(2.7, 0.64),
+  ];
+  const panGeometry = new THREE.LatheGeometry(panProfile, 40);
 
   function makePan(offsetX: number) {
     const panGroup = new THREE.Group();
     panGroup.position.x = offsetX;
     beamGroup.add(panGroup);
 
-    const chainPoints = [
-      new THREE.Vector3(-2.6, 0, 0),
-      new THREE.Vector3(0, -6.5, 0),
-      new THREE.Vector3(2.6, 0, 0),
-      new THREE.Vector3(0, -6.5, 0),
-      new THREE.Vector3(0, -1.5, -2.6),
-      new THREE.Vector3(0, -6.5, 0),
-      new THREE.Vector3(0, -1.5, 2.6),
-      new THREE.Vector3(0, -6.5, 0),
-    ];
-    const chainGeometry = new THREE.BufferGeometry().setFromPoints(chainPoints);
-    panGroup.add(new THREE.LineSegments(chainGeometry, chainMaterial));
-
-    const pan = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.22, 12, 32), material);
-    pan.rotation.x = Math.PI / 2;
-    pan.position.y = -6.5;
+    const pan = new THREE.Mesh(panGeometry, material);
+    pan.position.y = -7;
     panGroup.add(pan);
 
-    const panFloor = new THREE.Mesh(
-      new THREE.CircleGeometry(2.8, 32),
-      new THREE.MeshStandardMaterial({
-        color: 0xd9bd7e,
-        metalness: 0.6,
-        roughness: 0.4,
-        transparent: true,
-        opacity: 0.12,
-        side: THREE.DoubleSide,
-      }),
-    );
-    panFloor.rotation.x = -Math.PI / 2;
-    panFloor.position.y = -6.48;
-    panGroup.add(panFloor);
+    const rodTop = new THREE.Vector3(0, -0.35, 0);
+    const chainCount = 3;
+    for (let i = 0; i < chainCount; i++) {
+      const angle = (i / chainCount) * Math.PI * 2;
+      const rimPoint = new THREE.Vector3(Math.cos(angle) * 2.55, -6.65, Math.sin(angle) * 2.55);
+      panGroup.add(makeRod(THREE, rodTop, rimPoint, 0.045, material));
+    }
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.05, 8, 20), material);
+    ring.position.y = -0.35;
+    panGroup.add(ring);
 
     return panGroup;
   }
 
-  const leftPan = makePan(-11);
-  const rightPan = makePan(11);
+  makePan(-12);
+  makePan(12);
 
-  return { group, beamGroup, leftPan, rightPan };
+  return { group, beamGroup };
 }
 
-/** Hero arka planı: fareyle dengeyi değiştirebileceğiniz, altın renkli bir adalet terazisi. */
+/** Hero arka planı: bağlantılı ışık ağı + fareyle dengesi değişen bir adalet terazisi. */
 export function HeroScene() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -110,8 +135,6 @@ export function HeroScene() {
     const container = containerRef.current;
     if (!container) return;
 
-    // Dar ekranlarda metinle çakışmaması ve performans için 3D sahne yerine
-    // sade bir gradyan (globals.css / section arka planı) gösterilir.
     if (window.matchMedia("(max-width: 767px)").matches) return;
 
     let cancelled = false;
@@ -126,14 +149,13 @@ export function HeroScene() {
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-      camera.position.set(0, 2, 78);
+      camera.position.set(0, 2, 80);
 
-      // Terazinin metin sütununa binmemesi için görünür genişliğe göre sağa kaydır.
       function computeScaleOffsetX() {
         const distance = camera.position.z;
         const visibleHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * distance;
         const visibleWidth = visibleHeight * camera.aspect;
-        return Math.min(visibleWidth * 0.27, 32);
+        return Math.min(visibleWidth * 0.26, 30);
       }
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -141,63 +163,86 @@ export function HeroScene() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      scene.add(new THREE.AmbientLight(0xfff3dd, 1.1));
-      const keyLight = new THREE.DirectionalLight(0xffe9c2, 2.4);
+      scene.add(new THREE.AmbientLight(0xfff3dd, 1.05));
+      const keyLight = new THREE.DirectionalLight(0xffe9c2, 2.3);
       keyLight.position.set(30, 40, 50);
       scene.add(keyLight);
-      const fillLight = new THREE.DirectionalLight(0xffe9c2, 1.1);
-      fillLight.position.set(-20, 10, 40);
+      const fillLight = new THREE.DirectionalLight(0xffe9c2, 1);
+      fillLight.position.set(-20, 5, 40);
       scene.add(fillLight);
       const rimLight = new THREE.DirectionalLight(0x9fb6dd, 0.7);
       rimLight.position.set(-30, -10, -20);
       scene.add(rimLight);
+      const sparkle = new THREE.PointLight(0xffe9c2, 60, 60);
+      sparkle.position.set(15, 20, 45);
+      scene.add(sparkle);
 
       const goldMaterial = new THREE.MeshStandardMaterial({
-        color: 0xf1d9a0,
-        metalness: 0.6,
-        roughness: 0.35,
-        emissive: 0x3a2a10,
-        emissiveIntensity: 0.5,
+        color: 0xecd39c,
+        metalness: 0.8,
+        roughness: 0.22,
+        emissive: 0x2c1f0c,
+        emissiveIntensity: 0.35,
       });
       const { group: scaleGroup, beamGroup } = buildScale(THREE, goldMaterial);
-      scaleGroup.scale.setScalar(1.15);
+      scaleGroup.scale.setScalar(1.05);
       scaleGroup.position.x = computeScaleOffsetX();
       scene.add(scaleGroup);
 
-      // Etraftaki ince altın toz zerrecikleri (atmosfer için).
-      const dustPositions = new Float32Array(DUST_COUNT * 3);
-      const dustVelocities: { x: number; y: number; z: number }[] = [];
-      for (let i = 0; i < DUST_COUNT; i++) {
-        dustPositions[i * 3] = (Math.random() - 0.5) * DUST_BOUNDS.x * 2;
-        dustPositions[i * 3 + 1] = (Math.random() - 0.5) * DUST_BOUNDS.y * 2;
-        dustPositions[i * 3 + 2] = (Math.random() - 0.5) * DUST_BOUNDS.z * 2 - 10;
-        dustVelocities.push({
-          x: (Math.random() - 0.5) * 0.015,
-          y: (Math.random() - 0.5) * 0.015,
-          z: (Math.random() - 0.5) * 0.015,
+      // Bağlantılı ışık ağı (parçacıklar + çizgiler)
+      const positions = new Float32Array(PARTICLE_COUNT * 3);
+      const velocities: { x: number; y: number; z: number }[] = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * PARTICLE_BOUNDS.x * 2;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * PARTICLE_BOUNDS.y * 2;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * PARTICLE_BOUNDS.z * 2 - 6;
+        velocities.push({
+          x: (Math.random() - 0.5) * 0.035,
+          y: (Math.random() - 0.5) * 0.035,
+          z: (Math.random() - 0.5) * 0.035,
         });
       }
-      const dustGeometry = new THREE.BufferGeometry();
-      dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
       const glowTexture = makeGlowTexture(THREE);
-      const dustMaterial = new THREE.PointsMaterial({
+      const particleMaterial = new THREE.PointsMaterial({
         color: 0xd9bd7e,
-        size: 1.3,
+        size: 1.6,
         map: glowTexture,
         transparent: true,
-        opacity: 0.45,
+        opacity: 0.8,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       });
-      const dust = new THREE.Points(dustGeometry, dustMaterial);
-      scene.add(dust);
-      const dustAttr = dustGeometry.getAttribute("position") as InstanceType<
+      const points = new THREE.Points(geometry, particleMaterial);
+      scene.add(points);
+
+      const maxLines = PARTICLE_COUNT * 5;
+      const linePositions = new Float32Array(maxLines * 2 * 3);
+      const lineGeometry = new THREE.BufferGeometry();
+      lineGeometry.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
+      const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0xb08d3f,
+        transparent: true,
+        opacity: 0.2,
+        blending: THREE.AdditiveBlending,
+      });
+      const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+      scene.add(lines);
+
+      const posAttr = geometry.getAttribute("position") as InstanceType<typeof THREE.BufferAttribute>;
+      const lineAttr = lineGeometry.getAttribute("position") as InstanceType<
         typeof THREE.BufferAttribute
       >;
 
+      const raycaster = new THREE.Raycaster();
+      const pointerNDC = new THREE.Vector2(0, 0);
+      const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+      const mouseWorld = new THREE.Vector3();
+      let hasPointer = false;
       let targetTilt = 0;
       let targetYaw = 0;
-      let hasPointer = false;
 
       const onPointerMove = (event: PointerEvent) => {
         const rect = container.getBoundingClientRect();
@@ -214,11 +259,11 @@ export function HeroScene() {
           return;
         }
 
-        const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        const ny = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+        pointerNDC.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointerNDC.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
         hasPointer = true;
-        targetTilt = nx * MAX_TILT;
-        targetYaw = nx * 0.35 + ny * 0.06;
+        targetTilt = pointerNDC.x * MAX_TILT;
+        targetYaw = pointerNDC.x * 0.3 + pointerNDC.y * 0.05;
       };
       window.addEventListener("pointermove", onPointerMove);
       cleanupFns.push(() => window.removeEventListener("pointermove", onPointerMove));
@@ -230,21 +275,56 @@ export function HeroScene() {
         animationId = requestAnimationFrame(animate);
         t += 0.01;
 
+        if (hasPointer) {
+          raycaster.setFromCamera(pointerNDC, camera);
+          raycaster.ray.intersectPlane(dragPlane, mouseWorld);
+        }
+
         if (!reduceMotion) {
-          for (let i = 0; i < DUST_COUNT; i++) {
-            const x = dustAttr.getX(i) + dustVelocities[i].x;
-            const y = dustAttr.getY(i) + dustVelocities[i].y;
-            const z = dustAttr.getZ(i) + dustVelocities[i].z;
-            if (x > DUST_BOUNDS.x || x < -DUST_BOUNDS.x) dustVelocities[i].x *= -1;
-            if (y > DUST_BOUNDS.y || y < -DUST_BOUNDS.y) dustVelocities[i].y *= -1;
-            if (z > 10 || z < -DUST_BOUNDS.z - 10) dustVelocities[i].z *= -1;
-            dustAttr.setXYZ(i, x, y, z);
+          for (let i = 0; i < PARTICLE_COUNT; i++) {
+            let x = posAttr.getX(i) + velocities[i].x;
+            let y = posAttr.getY(i) + velocities[i].y;
+            const z = posAttr.getZ(i) + velocities[i].z;
+
+            if (hasPointer) {
+              const dx = x - mouseWorld.x;
+              const dy = y - mouseWorld.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < REPEL_RADIUS && dist > 0.001) {
+                const push = ((REPEL_RADIUS - dist) / REPEL_RADIUS) * REPEL_STRENGTH;
+                x += (dx / dist) * push;
+                y += (dy / dist) * push;
+              }
+            }
+
+            if (x > PARTICLE_BOUNDS.x || x < -PARTICLE_BOUNDS.x) velocities[i].x *= -1;
+            if (y > PARTICLE_BOUNDS.y || y < -PARTICLE_BOUNDS.y) velocities[i].y *= -1;
+            if (z > 6 || z < -PARTICLE_BOUNDS.z - 6) velocities[i].z *= -1;
+            posAttr.setXYZ(i, x, y, z);
           }
-          dustAttr.needsUpdate = true;
+          posAttr.needsUpdate = true;
+
+          let lineIdx = 0;
+          for (let i = 0; i < PARTICLE_COUNT && lineIdx < maxLines; i++) {
+            for (let j = i + 1; j < PARTICLE_COUNT && lineIdx < maxLines; j++) {
+              const dx = posAttr.getX(i) - posAttr.getX(j);
+              const dy = posAttr.getY(i) - posAttr.getY(j);
+              const dz = posAttr.getZ(i) - posAttr.getZ(j);
+              const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+              if (dist < CONNECT_DISTANCE) {
+                lineAttr.setXYZ(lineIdx * 2, posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
+                lineAttr.setXYZ(lineIdx * 2 + 1, posAttr.getX(j), posAttr.getY(j), posAttr.getZ(j));
+                lineIdx++;
+              }
+            }
+          }
+          lineGeometry.setDrawRange(0, lineIdx * 2);
+          lineAttr.needsUpdate = true;
 
           const idleTilt = hasPointer ? 0 : Math.sin(t * 0.6) * 0.05;
           beamGroup.rotation.z += ((targetTilt || idleTilt) - beamGroup.rotation.z) * 0.05;
-          scaleGroup.rotation.y += ((hasPointer ? targetYaw : Math.sin(t * 0.15) * 0.2) - scaleGroup.rotation.y) * 0.03;
+          scaleGroup.rotation.y +=
+            ((hasPointer ? targetYaw : Math.sin(t * 0.15) * 0.18) - scaleGroup.rotation.y) * 0.03;
         }
 
         renderer.render(scene, camera);
@@ -267,13 +347,13 @@ export function HeroScene() {
         renderer.dispose();
         renderer.domElement.remove();
         goldMaterial.dispose();
-        dustGeometry.dispose();
-        dustMaterial.dispose();
+        geometry.dispose();
+        lineGeometry.dispose();
+        particleMaterial.dispose();
+        lineMaterial.dispose();
         glowTexture.dispose();
         scaleGroup.traverse((obj) => {
-          if (obj instanceof THREE.Mesh || obj instanceof THREE.LineSegments) {
-            obj.geometry.dispose();
-          }
+          if (obj instanceof THREE.Mesh) obj.geometry.dispose();
         });
       });
     });

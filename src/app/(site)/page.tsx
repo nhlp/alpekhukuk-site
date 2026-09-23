@@ -44,7 +44,7 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 md:py-28">
           <div className="max-w-xl">
             <span className="inline-block rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-gold">
-              Kayseri Hukuk ve Arabuluculuk Bürosu
+              Alpek Hukuk ve Arabuluculuk Bürosu
             </span>
             <h1 className="mt-6 font-serif text-4xl font-semibold leading-[1.15] text-white sm:text-5xl">
               Adaletin Terazisinde,{" "}
