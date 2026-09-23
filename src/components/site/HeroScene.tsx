@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
-const PARTICLE_COUNT = 110;
+const PARTICLE_COUNT = 160;
 const CONNECT_DISTANCE = 15;
-const BOUNDS = { x: 46, y: 30, z: 26 };
+const BOUNDS = { x: 48, y: 32, z: 28 };
+const REPEL_RADIUS = 16;
+const REPEL_STRENGTH = 0.42;
 
 function makeGlowTexture(THREE: typeof import("three")) {
   const size = 64;
@@ -23,7 +25,7 @@ function makeGlowTexture(THREE: typeof import("three")) {
   return new THREE.CanvasTexture(canvas);
 }
 
-/** Hero arka planı: altın parçacıklardan oluşan, fareyle hafifçe paralaks yapan bir "güven ağı" animasyonu. */
+/** Hero arka planı: altın parçacıklardan oluşan, imlece tepki veren canlı bir "güven ağı" animasyonu. */
 export function HeroScene() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +45,7 @@ export function HeroScene() {
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
-      camera.position.z = 62;
+      camera.position.z = 64;
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
@@ -57,9 +59,9 @@ export function HeroScene() {
         positions[i * 3 + 1] = (Math.random() - 0.5) * BOUNDS.y * 2;
         positions[i * 3 + 2] = (Math.random() - 0.5) * BOUNDS.z * 2;
         velocities.push({
-          x: (Math.random() - 0.5) * 0.035,
-          y: (Math.random() - 0.5) * 0.035,
-          z: (Math.random() - 0.5) * 0.035,
+          x: (Math.random() - 0.5) * 0.04,
+          y: (Math.random() - 0.5) * 0.04,
+          z: (Math.random() - 0.5) * 0.04,
         });
       }
 
@@ -68,39 +70,57 @@ export function HeroScene() {
 
       const glowTexture = makeGlowTexture(THREE);
       const material = new THREE.PointsMaterial({
-        color: 0xd9bd7e,
-        size: 1.7,
+        color: 0xdec28b,
+        size: 2,
         map: glowTexture,
         transparent: true,
-        opacity: 0.9,
+        opacity: 0.95,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       });
       const points = new THREE.Points(geometry, material);
       scene.add(points);
 
-      const maxLines = PARTICLE_COUNT * 5;
+      const maxLines = PARTICLE_COUNT * 6;
       const linePositions = new Float32Array(maxLines * 2 * 3);
       const lineGeometry = new THREE.BufferGeometry();
       lineGeometry.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
       const lineMaterial = new THREE.LineBasicMaterial({
         color: 0xb08d3f,
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.22,
         blending: THREE.AdditiveBlending,
       });
       const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
       scene.add(lines);
 
-      let targetX = 0;
-      let targetY = 0;
+      const raycaster = new THREE.Raycaster();
+      const pointerNDC = new THREE.Vector2(0, 0);
+      const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+      const mouseWorld = new THREE.Vector3();
+      let hasPointer = false;
+      let targetCamX = 0;
+      let targetCamY = 0;
+
       const onPointerMove = (event: PointerEvent) => {
         const rect = container.getBoundingClientRect();
-        targetX = (((event.clientX - rect.left) / rect.width) * 2 - 1) * 18;
-        targetY = -(((event.clientY - rect.top) / rect.height) * 2 - 1) * 12;
+        pointerNDC.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointerNDC.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+        hasPointer = true;
+        targetCamX = pointerNDC.x * 26;
+        targetCamY = pointerNDC.y * 16;
+      };
+      const onPointerLeave = () => {
+        hasPointer = false;
+        targetCamX = 0;
+        targetCamY = 0;
       };
       container.addEventListener("pointermove", onPointerMove);
-      cleanupFns.push(() => container.removeEventListener("pointermove", onPointerMove));
+      container.addEventListener("pointerleave", onPointerLeave);
+      cleanupFns.push(() => {
+        container.removeEventListener("pointermove", onPointerMove);
+        container.removeEventListener("pointerleave", onPointerLeave);
+      });
 
       let animationId = 0;
       const posAttr = geometry.getAttribute("position") as InstanceType<typeof THREE.BufferAttribute>;
@@ -109,11 +129,28 @@ export function HeroScene() {
       function animate() {
         animationId = requestAnimationFrame(animate);
 
+        if (hasPointer) {
+          raycaster.setFromCamera(pointerNDC, camera);
+          raycaster.ray.intersectPlane(dragPlane, mouseWorld);
+        }
+
         if (!reduceMotion) {
           for (let i = 0; i < PARTICLE_COUNT; i++) {
             let x = posAttr.getX(i) + velocities[i].x;
             let y = posAttr.getY(i) + velocities[i].y;
             let z = posAttr.getZ(i) + velocities[i].z;
+
+            if (hasPointer) {
+              const dx = x - mouseWorld.x;
+              const dy = y - mouseWorld.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < REPEL_RADIUS && dist > 0.001) {
+                const push = ((REPEL_RADIUS - dist) / REPEL_RADIUS) * REPEL_STRENGTH;
+                x += (dx / dist) * push;
+                y += (dy / dist) * push;
+              }
+            }
+
             if (x > BOUNDS.x || x < -BOUNDS.x) velocities[i].x *= -1;
             if (y > BOUNDS.y || y < -BOUNDS.y) velocities[i].y *= -1;
             if (z > BOUNDS.z || z < -BOUNDS.z) velocities[i].z *= -1;
@@ -138,12 +175,12 @@ export function HeroScene() {
           lineGeometry.setDrawRange(0, lineIdx * 2);
           lineAttr.needsUpdate = true;
 
-          points.rotation.y += 0.0007;
+          points.rotation.y += 0.0009;
           lines.rotation.y = points.rotation.y;
         }
 
-        camera.position.x += (targetX - camera.position.x) * 0.02;
-        camera.position.y += (targetY - camera.position.y) * 0.02;
+        camera.position.x += (targetCamX - camera.position.x) * 0.045;
+        camera.position.y += (targetCamY - camera.position.y) * 0.045;
         camera.lookAt(scene.position);
 
         renderer.render(scene, camera);

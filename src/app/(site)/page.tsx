@@ -37,7 +37,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-navy">
+      <section className="relative flex min-h-[calc(100svh-81px)] items-center overflow-hidden bg-navy">
         <HeroScene />
         <div
           className="absolute inset-0"
@@ -92,6 +92,15 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="absolute inset-x-0 bottom-7 z-10 flex justify-center">
+          <span className="flex flex-col items-center gap-2 text-white/40">
+            <span className="text-[11px] uppercase tracking-[0.2em]">Keşfedin</span>
+            <span className="h-9 w-5 rounded-full border border-white/25 p-1">
+              <span className="block h-1.5 w-1.5 animate-bounce rounded-full bg-gold" />
+            </span>
+          </span>
         </div>
       </section>
 
