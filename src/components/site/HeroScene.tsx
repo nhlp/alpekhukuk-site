@@ -102,25 +102,31 @@ export function HeroScene() {
       let targetCamX = 0;
       let targetCamY = 0;
 
+      // Pencere seviyesinde dinleniyor: üstteki gradient/metin katmanları
+      // pointer olaylarını yakalasa bile fare takibi kesilmesin.
       const onPointerMove = (event: PointerEvent) => {
         const rect = container.getBoundingClientRect();
+        const inside =
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom;
+
+        if (!inside) {
+          hasPointer = false;
+          targetCamX = 0;
+          targetCamY = 0;
+          return;
+        }
+
         pointerNDC.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         pointerNDC.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
         hasPointer = true;
         targetCamX = pointerNDC.x * 26;
         targetCamY = pointerNDC.y * 16;
       };
-      const onPointerLeave = () => {
-        hasPointer = false;
-        targetCamX = 0;
-        targetCamY = 0;
-      };
-      container.addEventListener("pointermove", onPointerMove);
-      container.addEventListener("pointerleave", onPointerLeave);
-      cleanupFns.push(() => {
-        container.removeEventListener("pointermove", onPointerMove);
-        container.removeEventListener("pointerleave", onPointerLeave);
-      });
+      window.addEventListener("pointermove", onPointerMove);
+      cleanupFns.push(() => window.removeEventListener("pointermove", onPointerMove));
 
       let animationId = 0;
       const posAttr = geometry.getAttribute("position") as InstanceType<typeof THREE.BufferAttribute>;
@@ -138,7 +144,7 @@ export function HeroScene() {
           for (let i = 0; i < PARTICLE_COUNT; i++) {
             let x = posAttr.getX(i) + velocities[i].x;
             let y = posAttr.getY(i) + velocities[i].y;
-            let z = posAttr.getZ(i) + velocities[i].z;
+            const z = posAttr.getZ(i) + velocities[i].z;
 
             if (hasPointer) {
               const dx = x - mouseWorld.x;

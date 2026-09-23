@@ -41,15 +41,6 @@ export function ProfileForm({ user }: { user: User }) {
         </FormRow>
       </div>
 
-      <FormRow
-        label="Fotoğraf URL (opsiyonel)"
-        htmlFor="photoUrl"
-        error={state.errors?.photoUrl}
-        hint="Web üzerinde barındırılan bir görsel bağlantısı girin."
-      >
-        <Input id="photoUrl" name="photoUrl" defaultValue={user.photoUrl ?? ""} />
-      </FormRow>
-
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={pending}>
           {pending && <Loader2 className="h-4 w-4 animate-spin" />}

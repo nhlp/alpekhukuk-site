@@ -40,7 +40,7 @@ export default async function HomePage() {
       <section className="relative flex min-h-[calc(100svh-81px)] items-center overflow-hidden bg-navy">
         <HeroScene />
         <div
-          className="absolute inset-0"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
               "linear-gradient(90deg, rgba(11,31,58,0.92) 0%, rgba(11,31,58,0.65) 42%, rgba(11,31,58,0.35) 100%)",
@@ -94,17 +94,21 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="absolute inset-x-0 bottom-7 z-10 flex justify-center">
-          <span className="flex flex-col items-center gap-2 text-white/40">
+        <a
+          href="#hizmetler"
+          className="absolute inset-x-0 bottom-7 z-10 flex justify-center"
+          aria-label="Aşağı kaydırıp hizmetlerimizi keşfedin"
+        >
+          <span className="flex flex-col items-center gap-2 text-white/40 transition-colors hover:text-white/70">
             <span className="text-[11px] uppercase tracking-[0.2em]">Keşfedin</span>
             <span className="h-9 w-5 rounded-full border border-white/25 p-1">
               <span className="block h-1.5 w-1.5 animate-bounce rounded-full bg-gold" />
             </span>
           </span>
-        </div>
+        </a>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <section id="hizmetler" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <span className="text-sm font-semibold uppercase tracking-wide text-gold">

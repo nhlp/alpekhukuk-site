@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Mail, Phone, User } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 
 import { PageHero } from "@/components/site/PageHero";
 import { ArticleCard } from "@/components/site/ArticleCard";
@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { LinkedinIcon } from "@/components/site/SocialIcons";
 import { getLawyerBySlug, getArticlesByAuthor } from "@/lib/queries";
 import { absoluteUrl } from "@/lib/site";
+import { getInitials } from "@/lib/utils";
 
 export async function generateMetadata(
   props: PageProps<"/avukatlarimiz/[slug]">,
@@ -47,21 +48,10 @@ export default async function LawyerDetailPage(props: PageProps<"/avukatlarimiz/
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[280px_1fr]">
           <div>
-            <div className="aspect-4/5 w-full overflow-hidden rounded-2xl bg-navy/5">
-              {lawyer.photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={lawyer.photoUrl}
-                  alt={`${lawyer.title} ${lawyer.name}`}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-navy/20">
-                  <User className="h-20 w-20" strokeWidth={1} />
-                </div>
-              )}
-            </div>
-            <div className="mt-5 space-y-2.5 text-sm">
+            <span className="flex h-28 w-28 items-center justify-center rounded-full bg-navy font-serif text-3xl font-semibold text-gold">
+              {getInitials(lawyer.name)}
+            </span>
+            <div className="mt-6 space-y-2.5 text-sm">
               {lawyer.phone && (
                 <a
                   href={`tel:${lawyer.phone.replace(/\s+/g, "")}`}
