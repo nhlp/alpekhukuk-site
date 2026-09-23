@@ -122,7 +122,7 @@ model SiteSettings {
   instagramUrl  String?
   linkedinUrl   String?
   heroTitle     String   @default("Güven, Şeffaflık ve Sonuç Odaklı Hukuki Danışmanlık")
-  heroSubtitle  String   @default("Aile, iş ve ticaret hukuku başta olmak üzere geniş bir yelpazede uzman kadromuzla yanınızdayız.")
+  heroSubtitle  String   @default("Aile, iş, ticaret, ceza ve icra hukukunda; her dosyaya özel strateji ve kararlı takiple Kayseri'de güvenilir çözüm ortağınızız.")
   aboutText     String   @default("")
   updatedAt     DateTime @updatedAt
 

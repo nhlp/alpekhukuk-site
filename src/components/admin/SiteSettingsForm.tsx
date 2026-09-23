@@ -15,13 +15,11 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettings }) {
 
   return (
     <form action={formAction} className="space-y-5">
-      <FormRow label="Ana Sayfa Başlığı" htmlFor="heroTitle" error={state.errors?.heroTitle}>
-        <Textarea id="heroTitle" name="heroTitle" defaultValue={settings.heroTitle} />
-      </FormRow>
       <FormRow
         label="Ana Sayfa Alt Başlığı"
         htmlFor="heroSubtitle"
         error={state.errors?.heroSubtitle}
+        hint="Ana sayfadaki büyük başlık artık sabit tasarımlıdır; bu metin başlığın altında görünür."
       >
         <Textarea id="heroSubtitle" name="heroSubtitle" defaultValue={settings.heroSubtitle} />
       </FormRow>

@@ -14,7 +14,6 @@ const settingsSchema = z.object({
   mapEmbedUrl: z.string().trim().url("Geçerli bir harita bağlantısı girin.").optional().or(z.literal("")),
   instagramUrl: z.string().trim().url("Geçerli bir Instagram bağlantısı girin.").optional().or(z.literal("")),
   linkedinUrl: z.string().trim().url("Geçerli bir LinkedIn bağlantısı girin.").optional().or(z.literal("")),
-  heroTitle: z.string().trim().min(5, "Ana sayfa başlığı gerekli."),
   heroSubtitle: z.string().trim().min(5, "Ana sayfa alt başlığı gerekli."),
   aboutText: z.string().trim().optional(),
 });

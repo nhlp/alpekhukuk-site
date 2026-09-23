@@ -10,21 +10,9 @@ import { HeroScene } from "@/components/site/HeroScene";
 import { Button } from "@/components/ui/Button";
 
 const pillars = [
-  {
-    icon: ShieldCheck,
-    title: "Güven",
-    text: "Her müvekkilimizle kurduğumuz ilişkide dürüstlük ve meslek etiği önceliğimizdir.",
-  },
-  {
-    icon: Eye,
-    title: "Şeffaflık",
-    text: "Süreç, süre ve maliyetler konusunda başından itibaren açık ve anlaşılır bilgilendirme yaparız.",
-  },
-  {
-    icon: Target,
-    title: "Sonuç",
-    text: "Her dosyaya özgü strateji kurarak müvekkillerimizin hak ve menfaatlerini en etkin şekilde koruruz.",
-  },
+  { icon: ShieldCheck, title: "Güven" },
+  { icon: Eye, title: "Şeffaflık" },
+  { icon: Target, title: "Sonuç" },
 ];
 
 export default async function HomePage() {
@@ -40,21 +28,29 @@ export default async function HomePage() {
       <section className="relative flex min-h-[calc(100svh-81px)] items-center overflow-hidden bg-navy">
         <HeroScene />
         <div
+          className="pointer-events-none absolute inset-0 md:hidden"
+          style={{
+            background:
+              "radial-gradient(circle at 80% 30%, rgba(176,141,63,0.22) 0%, rgba(11,31,58,0) 55%)",
+          }}
+        />
+        <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
               "linear-gradient(90deg, rgba(11,31,58,0.92) 0%, rgba(11,31,58,0.65) 42%, rgba(11,31,58,0.35) 100%)",
           }}
         />
-        <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center md:py-28">
-          <div>
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 md:py-28">
+          <div className="max-w-xl">
             <span className="inline-block rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-gold">
               Kayseri Hukuk ve Arabuluculuk Bürosu
             </span>
-            <h1 className="mt-6 font-serif text-4xl font-semibold leading-tight text-white sm:text-5xl">
-              {settings.heroTitle}
+            <h1 className="mt-6 font-serif text-4xl font-semibold leading-[1.15] text-white sm:text-5xl">
+              Adaletin Terazisinde,{" "}
+              <span className="italic text-gold">Sizin Tarafınızdayız.</span>
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-white/70">
               {settings.heroSubtitle}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -75,22 +71,17 @@ export default async function HomePage() {
                 </Button>
               </a>
             </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4 md:justify-self-end">
-            {pillars.map((pillar) => (
-              <div
-                key={pillar.title}
-                className="col-span-3 flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 sm:col-span-1 sm:flex-col md:col-span-3 md:flex-row"
-              >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold">
-                  <pillar.icon className="h-5 w-5" strokeWidth={1.75} />
-                </span>
-                <div>
-                  <p className="font-serif text-base font-semibold text-white">{pillar.title}</p>
-                  <p className="mt-1 text-sm text-white/60">{pillar.text}</p>
+
+            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-white/10 pt-6">
+              {pillars.map((pillar) => (
+                <div key={pillar.title} className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold">
+                    <pillar.icon className="h-4 w-4" strokeWidth={1.75} />
+                  </span>
+                  <span className="text-sm font-medium text-white/80">{pillar.title}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
