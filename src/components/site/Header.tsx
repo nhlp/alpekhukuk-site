@@ -20,10 +20,10 @@ export function Header({ phone }: { phone: string }) {
             <Scale className="h-5 w-5" strokeWidth={1.75} />
           </span>
           <span className="flex flex-col leading-tight">
-            <span className="font-serif text-lg font-semibold text-navy">
+            <span className="font-serif text-2xl font-semibold uppercase tracking-wide text-navy">
               {siteConfig.shortName}
             </span>
-            <span className="text-[11px] uppercase tracking-[0.14em] text-gold">
+            <span className="text-xs uppercase tracking-[0.14em] text-gold">
               {siteConfig.motto}
             </span>
           </span>

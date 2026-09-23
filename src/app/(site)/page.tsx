@@ -25,20 +25,20 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative flex min-h-[calc(100svh-81px)] items-center overflow-hidden bg-navy">
+      <section className="relative flex min-h-[calc(100svh-81px)] items-center overflow-hidden bg-black">
         <HeroScene />
         <div
           className="pointer-events-none absolute inset-0 md:hidden"
           style={{
             background:
-              "radial-gradient(circle at 80% 30%, rgba(176,141,63,0.22) 0%, rgba(11,31,58,0) 55%)",
+              "radial-gradient(circle at 80% 30%, rgba(176,141,63,0.22) 0%, rgba(0,0,0,0) 55%)",
           }}
         />
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(11,31,58,0.92) 0%, rgba(11,31,58,0.65) 42%, rgba(11,31,58,0.35) 100%)",
+              "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 42%, rgba(0,0,0,0.35) 100%)",
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 md:py-28">
