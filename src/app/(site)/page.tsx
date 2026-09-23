@@ -1,0 +1,200 @@
+import Link from "next/link";
+import { ShieldCheck, Eye, Target, ArrowRight, Phone } from "lucide-react";
+
+import { getSiteSettings } from "@/lib/settings";
+import { getPracticeAreas, getLawyers, getPublishedArticles } from "@/lib/queries";
+import { PracticeAreaCard } from "@/components/site/PracticeAreaCard";
+import { LawyerCard } from "@/components/site/LawyerCard";
+import { ArticleCard } from "@/components/site/ArticleCard";
+import { Button } from "@/components/ui/Button";
+
+const pillars = [
+  {
+    icon: ShieldCheck,
+    title: "Güven",
+    text: "Her müvekkilimizle kurduğumuz ilişkide dürüstlük ve meslek etiği önceliğimizdir.",
+  },
+  {
+    icon: Eye,
+    title: "Şeffaflık",
+    text: "Süreç, süre ve maliyetler konusunda başından itibaren açık ve anlaşılır bilgilendirme yaparız.",
+  },
+  {
+    icon: Target,
+    title: "Sonuç",
+    text: "Her dosyaya özgü strateji kurarak müvekkillerimizin hak ve menfaatlerini en etkin şekilde koruruz.",
+  },
+];
+
+export default async function HomePage() {
+  const [settings, practiceAreas, lawyers, articles] = await Promise.all([
+    getSiteSettings(),
+    getPracticeAreas(),
+    getLawyers(),
+    getPublishedArticles(3),
+  ]);
+
+  return (
+    <>
+      <section className="relative overflow-hidden bg-navy">
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center md:py-28">
+          <div>
+            <span className="inline-block rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-gold">
+              Kayseri Hukuk ve Arabuluculuk Bürosu
+            </span>
+            <h1 className="mt-6 font-serif text-4xl font-semibold leading-tight text-white sm:text-5xl">
+              {settings.heroTitle}
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
+              {settings.heroSubtitle}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/randevu-al">
+                <Button variant="gold" size="lg">
+                  Randevu Al
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <a href={`tel:${settings.phone.replace(/\s+/g, "")}`}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-white/30 text-white hover:bg-white/10"
+                >
+                  <Phone className="h-4 w-4" />
+                  {settings.phone}
+                </Button>
+              </a>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-4 md:justify-self-end">
+            {pillars.map((pillar) => (
+              <div
+                key={pillar.title}
+                className="col-span-3 flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 sm:col-span-1 sm:flex-col md:col-span-3 md:flex-row"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold">
+                  <pillar.icon className="h-5 w-5" strokeWidth={1.75} />
+                </span>
+                <div>
+                  <p className="font-serif text-base font-semibold text-white">{pillar.title}</p>
+                  <p className="mt-1 text-sm text-white/60">{pillar.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <span className="text-sm font-semibold uppercase tracking-wide text-gold">
+              Hizmetlerimiz
+            </span>
+            <h2 className="mt-2 font-serif text-3xl font-semibold text-navy">
+              Çalışma Alanlarımız
+            </h2>
+          </div>
+          <Link
+            href="/calisma-alanlari"
+            className="flex items-center gap-1.5 text-sm font-medium text-navy hover:text-gold"
+          >
+            Tüm alanları görüntüle
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {practiceAreas.map((area) => (
+            <PracticeAreaCard key={area.id} area={area} />
+          ))}
+        </div>
+      </section>
+
+      {lawyers.length > 0 && (
+        <section className="bg-white py-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+              <div>
+                <span className="text-sm font-semibold uppercase tracking-wide text-gold">
+                  Ekibimiz
+                </span>
+                <h2 className="mt-2 font-serif text-3xl font-semibold text-navy">
+                  Avukatlarımız
+                </h2>
+              </div>
+              <Link
+                href="/avukatlarimiz"
+                className="flex items-center gap-1.5 text-sm font-medium text-navy hover:text-gold"
+              >
+                Tüm ekibi görüntüle
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {lawyers.map((lawyer) => (
+                <LawyerCard key={lawyer.id} lawyer={lawyer} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {articles.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <span className="text-sm font-semibold uppercase tracking-wide text-gold">
+                Bilgi Bankası
+              </span>
+              <h2 className="mt-2 font-serif text-3xl font-semibold text-navy">
+                Güncel Makaleler
+              </h2>
+            </div>
+            <Link
+              href="/makaleler"
+              className="flex items-center gap-1.5 text-sm font-medium text-navy hover:text-gold"
+            >
+              Tüm makaleler
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="bg-cream py-20">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-3xl border border-line bg-white px-6 py-14 text-center shadow-sm sm:px-14">
+          <span className="rounded-full bg-navy/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-navy">
+            Ücretsiz Ön Görüşme
+          </span>
+          <h2 className="font-serif text-3xl font-semibold text-navy">
+            Hukuki sorunuz mu var? Hemen randevu alın.
+          </h2>
+          <p className="max-w-xl text-sm leading-relaxed text-foreground/60">
+            Uzman avukat kadromuz, davanızı veya danışmanlık talebinizi değerlendirmek için sizi
+            dinlemeye hazır. Online randevu formunu doldurun, en kısa sürede size dönüş yapalım.
+          </p>
+          <Link href="/randevu-al">
+            <Button variant="primary" size="lg">
+              Randevu Al
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+    </>
+  );
+}

@@ -1,0 +1,130 @@
+// Alpek Hukuk ve Arabuluculuk - veritabanı şeması
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  LAWYER
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  title        String   @default("Av.")
+  slug         String   @unique
+  role         Role     @default(LAWYER)
+  photoUrl     String?
+  bio          String   @default("")
+  phone        String?
+  linkedinUrl  String?
+  order        Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  articles Article[]
+
+  @@map("users")
+}
+
+model PracticeArea {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  shortDescription String
+  content          String   @default("")
+  icon             String   @default("scale")
+  order            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  articles     Article[]
+  appointments Appointment[]
+
+  @@map("practice_areas")
+}
+
+model Article {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  excerpt     String
+  content     String
+  coverImageUrl String?
+  metaTitle   String
+  metaDescription String
+  status      ArticleStatus @default(DRAFT)
+  readingTimeMinutes Int    @default(1)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  practiceAreaId String?
+  practiceArea   PracticeArea? @relation(fields: [practiceAreaId], references: [id], onDelete: SetNull)
+
+  @@index([authorId])
+  @@index([practiceAreaId])
+  @@map("articles")
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  fullName    String
+  phone       String
+  email       String?
+  message     String?
+  preferredDate DateTime?
+  preferredTime String?
+  status      AppointmentStatus @default(PENDING)
+  adminNote   String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  practiceAreaId String?
+  practiceArea   PracticeArea? @relation(fields: [practiceAreaId], references: [id], onDelete: SetNull)
+
+  @@index([practiceAreaId])
+  @@index([status])
+  @@map("appointments")
+}
+
+model SiteSettings {
+  id            String   @id @default("main")
+  address       String   @default("Barbaros Mah., Kayseri")
+  phone         String   @default("+90 536 666 94 68")
+  email         String   @default("info@alpekhukuk.com.tr")
+  workingHours  String   @default("Pazartesi - Cuma: 09:00 - 18:00")
+  mapEmbedUrl   String?
+  instagramUrl  String?
+  linkedinUrl   String?
+  heroTitle     String   @default("Güven, Şeffaflık ve Sonuç Odaklı Hukuki Danışmanlık")
+  heroSubtitle  String   @default("Aile, iş ve ticaret hukuku başta olmak üzere geniş bir yelpazede uzman kadromuzla yanınızdayız.")
+  aboutText     String   @default("")
+  updatedAt     DateTime @updatedAt
+
+  @@map("site_settings")
+}
